@@ -1,0 +1,3 @@
+"D:\venv\tkinter\Scripts\activate.bat"
+
+python ludius/train.py
