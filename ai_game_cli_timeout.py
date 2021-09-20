@@ -708,28 +708,31 @@ class GameWindow(QMainWindow):
         import pandas as pd
         from time import sleep
         print('------------------------------------------------------------------- FIN -------------------------------------------------------------------')
-        self.trace.write()
         
-        #df = pd.read_hdf('data/data.h5')
+        # -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        # on utilise cette partie pour mettre le score dans le bon état car à la fin d'une partie le score n'est pas en bon état
+        df = pd.read_hdf('data/data.h5')
+        last = df.shape[0] - 1
+        df.loc[last, 'winner'] = 0 if df.loc[last, 'score'][0] > df.loc[last, 'score'][1] else (1 if df.loc[last, 'score'][0] < df.loc[last, 'score'][1] else 2)
+        df.to_hdf('data/data.h5', key='df', mode='w')
+        df.to_csv('data/jeu.csv', sep=',')
+        # -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        self.trace.write()
         config = pd.read_hdf('data/config.h5')
-        #if config.shape[0] == 1:
-
-        config = config.append({ 
-            'depth': config.depth[0] - 2, 
-            'width': config.width[0] + 1
-        }, ignore_index=True)
-
-        config.depth[0] = 0
-        config.width[0] = 0        
+        print(f'before: {config}\nle shape: {config[config.depth == (config.depth[0] - 2)].shape[0]}')
+        if config[config.depth == (config.depth[0] - 2)].shape[0] < 1:
+            config = config.append({ 'depth': config.depth[0] - 2, 'width': config.width[0] + 1, 'width_max': len(df.loc[last-1, 'mvt']) }, ignore_index=True)
+        else:
+            config.loc[config.depth == (config.depth[0] - 2), 'width'] += 1
+        config.depth[0], config.width[0] = 0, 0
         
         config.to_hdf('data/config.h5', key='df', mode='w')
         config.to_csv('data/config.csv', sep=',') 
-
-        print(config)
-
-        sleep(5)
+        print(f'after: {config}')
+        sleep(10)
+        #print(cool)
         self.newGame()
-        pass
 
     def replayGame(self):
         name =QtWidgets.QFileDialog.getOpenFileName(self, 'Load Game')
