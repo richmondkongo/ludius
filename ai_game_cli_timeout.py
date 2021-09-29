@@ -725,12 +725,13 @@ class GameWindow(QMainWindow):
             config = config.append({ 'depth': config.depth[0] - 2, 'width': config.width[0] + 1, 'width_max': len(df.loc[last-1, 'mvt']) }, ignore_index=True)
         else:
             config.loc[config.depth == (config.depth[0] - 2), 'width'] += 1
+            
         config.depth[0], config.width[0] = 0, 0
         
         config.to_hdf('data/config.h5', key='df', mode='w')
         config.to_csv('data/config.csv', sep=',') 
         print(f'after: {config}')
-        sleep(10)
+        sleep(5)
         #print(cool)
         self.newGame()
 

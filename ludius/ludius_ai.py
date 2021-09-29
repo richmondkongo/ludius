@@ -61,9 +61,7 @@ class IA(Player):
         config = pd.read_hdf('data/config.h5')
         actions = self.action_possible(board=board, step=step)
 
-        
-
-        print(f'\n\n\n\n  ---{self.playerColor}({config.depth[0]})\nactions possibles:{actions}')
+        print(f'\n\n\n\n  ---{self.playerColor}({config.depth[0]})\nactions possibles:{actions}\n{np.array(board)}')
         if config.depth[0] == config.depth[config.shape[0]-1] and config.shape[0] > 1:
             # on vérifie si on est à l'état ou on s'est arrêté à la partie précédente
             config.width[0] = config.width[config.shape[0]-1]
@@ -71,6 +69,9 @@ class IA(Player):
             config.width[0] = 0
         config.to_hdf('data/config.h5', key='df', mode='w')
         config.to_csv('data/config.csv', sep=',')
+        if config.depth[0] >= 139:
+            print(f'iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii:\n{config.depth[config.shape[0]-1]}')
+            sleep(10)
 
         index_error = False
         try:
